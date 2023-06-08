@@ -16,7 +16,7 @@ from helper_func import subscribed, encode, decode, get_messages
 from database.database import add_user, del_user, full_userbase, present_user
 
 
-
+SLEEP_TIME = int(60) # add with seconds
 
 @Bot.on_message(filters.command('start') & filters.private & subscribed)
 async def start_command(client: Client, message: Message):
@@ -62,7 +62,7 @@ async def start_command(client: Client, message: Message):
             await message.reply_text("Something went wrong..!")
             return
         await temp_msg.delete()
-
+        SEND_IDS = [] # taking list for send message id using py list
         for msg in messages:
 
             if bool(CUSTOM_CAPTION) & bool(msg.document):
@@ -76,13 +76,18 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
 
             try:
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
-                await asyncio.sleep(0.5)
+                snd = await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                SEND_IDS.append(f"{snd.id}") # add id for list
             except FloodWait as e:
-                await asyncio.sleep(e.x)
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                await asyncio.sleep(e.value)
+                snd = await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                SEND_IDS.append(f"{snd.id}")
             except:
                 pass
+            await asyncio.sleep(0.5)
+        await asyncio.sleep(SLEEP_TIME) #sleep for auto delete time
+        for m_id in SEND_IDS: 
+            await client.delete_messages(id, int(m_id)) #© https://github.com/MrMKN
         return
     else:
         reply_markup = InlineKeyboardMarkup(
