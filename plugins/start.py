@@ -76,7 +76,7 @@ async def start_command(client: Client, message: Message):
                 reply_markup = None
 
             try:
-                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                l = await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
                 await asyncio.sleep(0.5)
             except FloodWait as e:
                 await asyncio.sleep(e.x)
@@ -90,6 +90,10 @@ async def start_command(client: Client, message: Message):
                 [
                     InlineKeyboardButton("😊 About Me", callback_data = "about"),
                     InlineKeyboardButton("🔒 Close", callback_data = "close")
+                ],
+                [
+                    InlineKeyboardButton(" ♠ 𝙲𝙷𝙰𝙽𝙽𝙴𝙻 ♠ ", url = "https://t.me/series_bazaar"),
+                    InlineKeyboardButton(" ♠ ɢʀᴏᴜᴘ ♠ ", url = "https://t.me/+Z2RpHjUU_7c2Yzk1")
                 ]
             ]
         )
